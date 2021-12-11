@@ -33,6 +33,7 @@ let set_exn t i v =
 
 let get_unchecked t i = Caml.Obj.magic (Js.array_get t i)
 let set_unchecked t i v = Js.array_set t i v
+let get t i = if i < 0 || i >= length t then None else Some (get_unchecked t i)
 
 let equal eq a b =
   let la = length a in
