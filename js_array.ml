@@ -162,24 +162,31 @@ let insert (t : 'a t) ~idx a =
 (*_ let copy_within (t : _ t) ~target ~start ~end_ = 
     t##copyWithin target start end_ *)
 
+let rev_iter (t : _ t) ~f =
+  for i = length t - 1 downto 0 do
+    f (get_exn t i)
+  done
+;;
 
-  let rev_iter (t : _ t) ~f =
-    for i = length t - 1 downto 0 do
-      f (get_exn t i)
-    done
-  ;;
+let rev_iteri (t : _ t) ~f =
+  for i = length t - 1 downto 0 do
+    f i (get_exn t i)
+  done
+;;
 
-  let rev_iteri (t : _ t) ~f =
-    for i = length t - 1 downto 0 do
-      f i (get_exn t i)
-    done
-  ;;
+let sexp_of_t sexp_of_a (t : _ t) =
+  let l = ref [] in
+  rev_iter t ~f:(fun a -> l := sexp_of_a a :: !l);
+  Sexp.List !l
+;;
 
-let sexp_of_t sexp_of_a (t : _ t) = 
-  let l = ref [] in 
-  rev_iter t ~f:(fun a -> 
-      l := sexp_of_a a :: !l ) 
-  ; Sexp.List !l
+let t_of_sexp a_of_sexp sexp =
+  let a = empty () in
+  (match sexp with
+  | Sexp.Atom _ -> failwith "expected list, found atom"
+  | List l -> List.iter l ~f:(fun s -> push a (a_of_sexp s)));
+  a
+;;
 
 include Bin_prot.Utils.Make_binable1_with_uuid (struct
   module Binable = struct
@@ -197,8 +204,6 @@ include Bin_prot.Utils.Make_binable1_with_uuid (struct
     Bin_shape_lib.Std.Shape.Uuid.of_string "F8686F64-7BCC-4F34-B09B-CCD888149264"
   ;;
 end)
-
-
 
 include Indexed_container.Make (struct
   type nonrec 'a t = 'a t
