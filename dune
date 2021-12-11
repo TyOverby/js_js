@@ -1,0 +1,5 @@
+(library
+ (name js_js)
+ (libraries base bin_prot js_of_ocaml)
+ (preprocess
+  (pps js_of_ocaml-ppx ppx_jane)))
