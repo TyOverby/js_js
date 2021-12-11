@@ -96,6 +96,8 @@ let singleton x =
 
 let sort (a : 'a t) ~(compare : 'a -> 'a -> int) =
   let cb : ('a -> 'a -> int) Js.callback = Js.wrap_callback compare in
+  (* ints can be cast to floats without issue because they have the 
+     same representation in javascript *)
   let cb : ('a -> 'a -> float) Js.callback = Caml.Obj.magic cb in
   let (_ : 'a t) = a##sort cb in
   ()
