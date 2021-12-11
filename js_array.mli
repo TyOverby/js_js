@@ -10,6 +10,7 @@ include Monad.S with type 'a t := 'a t
 
 val empty : unit -> 'a t
 val clone : 'a t -> 'a t
+val truncate : 'a t -> len: int -> unit
 val of_array : 'a array -> 'a t
 val get : 'a t -> int -> 'a option
 val set_exn : 'a t -> int -> 'a -> unit

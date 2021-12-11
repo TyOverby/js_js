@@ -19,6 +19,11 @@ let oob m t index =
 
 let bounds_check m t i = if i < 0 || i >= length t then oob m t i
 
+let truncate t ~len =
+  if len < 0 || len > length t then oob "truncate" t len;
+  unsafe_set_length t len
+;;
+
 let get_exn t i =
   bounds_check "get_exn" t i;
   Caml.Obj.magic (Js.array_get t i)
