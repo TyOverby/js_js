@@ -34,3 +34,6 @@ val mapi : 'a t -> f:(int -> 'a -> 'b) -> 'b t
 val filter : 'a t -> f:('a -> bool) -> 'a t
 val filteri : 'a t -> f:(int -> 'a -> bool) -> 'a t
 val insert : 'a t -> idx:int -> 'a -> unit
+
+val rev_iter : 'a t -> f:('a -> unit) -> unit
+val rev_iteri : 'a t -> f:(int -> 'a -> unit) -> unit

@@ -8,8 +8,6 @@ let clone (a : 'a t) = a##slice_end 0
 let to_array = Js.to_array
 let of_array = Js.array
 let fast_to_array = to_array
-let sexp_of_t sexp_of_a t = Array.sexp_of_t sexp_of_a (to_array t)
-let t_of_sexp a_of_sexp sexp = of_array (Array.t_of_sexp a_of_sexp sexp)
 let length (t : _ t) = t##.length
 let unsafe_set_length (t : _ t) l = t##.length := l
 
@@ -164,6 +162,25 @@ let insert (t : 'a t) ~idx a =
 (*_ let copy_within (t : _ t) ~target ~start ~end_ = 
     t##copyWithin target start end_ *)
 
+
+  let rev_iter (t : _ t) ~f =
+    for i = length t - 1 downto 0 do
+      f (get_exn t i)
+    done
+  ;;
+
+  let rev_iteri (t : _ t) ~f =
+    for i = length t - 1 downto 0 do
+      f i (get_exn t i)
+    done
+  ;;
+
+let sexp_of_t sexp_of_a (t : _ t) = 
+  let l = ref [] in 
+  rev_iter t ~f:(fun a -> 
+      l := sexp_of_a a :: !l ) 
+  ; Sexp.List !l
+
 include Bin_prot.Utils.Make_binable1_with_uuid (struct
   module Binable = struct
     open Bin_prot.Std
@@ -180,6 +197,8 @@ include Bin_prot.Utils.Make_binable1_with_uuid (struct
     Bin_shape_lib.Std.Shape.Uuid.of_string "F8686F64-7BCC-4F34-B09B-CCD888149264"
   ;;
 end)
+
+
 
 include Indexed_container.Make (struct
   type nonrec 'a t = 'a t
