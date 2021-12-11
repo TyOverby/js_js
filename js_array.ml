@@ -184,7 +184,9 @@ let t_of_sexp a_of_sexp sexp =
   let a = empty () in
   (match sexp with
   | Sexp.Atom _ -> failwith "expected list, found atom"
-  | List l -> List.iter l ~f:(fun s -> push a (a_of_sexp s)));
+  | List l -> 
+    unsafe_set_length a (List.length l);
+    List.iteri l ~f:(fun i s -> set_unchecked a i (a_of_sexp s)));
   a
 ;;
 
